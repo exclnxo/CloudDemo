@@ -90,12 +90,18 @@ extension PhotoViewController: UICollectionViewDataSource, UICollectionViewDeleg
         let photo = viewModel.getCellViewModel(indexPath)
         cell?.idLabel.text = String(photo.id ?? 0)
         cell?.urlLabel.text = photo.title
+        cell?.iv.image = nil
+        
         if let url = photo.thumbnailUrl {
             cell?.activityIndicator.startAnimating()
             cell?.activityIndicator.isHidden = false
             let URL = NSURL.init(string: url)!
+            
             if let image = imageCache.object(forKey: URL as NSURL) {
-                cell?.iv.image = image
+                DispatchQueue.main.async {
+                    cell?.iv.image = image
+                }
+                
                 cell?.activityIndicator.stopAnimating()
                 cell?.activityIndicator.isHidden = true
             } else {
@@ -104,7 +110,9 @@ extension PhotoViewController: UICollectionViewDataSource, UICollectionViewDeleg
                     case let .success(response):
                         if let image = UIImage(data: response.data) {
                             self.imageCache.setObject(image, forKey: URL as NSURL)
-                            cell?.iv.image = image
+                            DispatchQueue.main.async {
+                                cell?.iv.image = image
+                            }
                             cell?.activityIndicator.stopAnimating()
                             cell?.activityIndicator.isHidden = true
                         }

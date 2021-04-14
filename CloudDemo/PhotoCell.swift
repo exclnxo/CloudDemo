@@ -22,7 +22,7 @@ class PhotoCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        self.iv.image = nil
+        self.iv.image = UIImage()
         self.activityIndicator.isHidden = true
     }
     
